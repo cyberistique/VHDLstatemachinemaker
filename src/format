@@ -1,0 +1,16 @@
+moore x
+inp1 inp2 inp3 inp4
+out1 out2 out3 out4
+name outname out
+.
+.
+.
+.
+.
+.
+
+name condition1 condition2 delay state condition delay state condition delay state
+name condition delay state condition delay state condition delay state
+name condition delay state condition delay state condition delay state
+name condition delay state condition delay state condition delay state
+name condition delay state condition delay state condition delay state
