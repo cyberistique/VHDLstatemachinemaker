@@ -21,6 +21,7 @@ public class MachineStruct {
         this.State_Dict = new HashMap<>();
     }
 
+
     public void set_idle(state idle){
         this.idle = idle;
     }

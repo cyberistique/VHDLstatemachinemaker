@@ -18,6 +18,7 @@ public class Transition {
          this.delay = delay;
      }
 
+
      public String condition(){
          return "if "+input_name+" = '"+input+"' then ";
      }

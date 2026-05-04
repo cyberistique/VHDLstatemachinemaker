@@ -79,6 +79,7 @@ public class state {
             }
             T_out.append(i.getNext().iterate(option));
         }
+
         return T_out.toString();
     }
 
