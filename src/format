@@ -9,8 +9,8 @@ name outname out
 .
 .
 
-name condition1 condition2 delay state condition delay state condition delay state
-name condition delay state condition delay state condition delay state
-name condition delay state condition delay state condition delay state
-name condition delay state condition delay state condition delay state
-name condition delay state condition delay state condition delay state
+name condition1 condition2 delay state
+name condition1 condition2 delay state
+name condition1 condition2 delay state NA NA delay state
+name condition1 condition2 delay state NA NA delay state
+name condition1 condition2 delay state

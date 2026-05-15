@@ -1,17 +1,17 @@
 public class Transition {
     private final static String NONE = "NA";
-    private state next;
+    private State next;
     private String input_name;
     private int input;
     private int delay;
 
-     public Transition(state next,String input_name, int input,int delay){
+     public Transition(State next,String input_name, int input,int delay){
          this.next = next;
          this.input_name = input_name;
          this.input = input;
          this.delay = delay;
      }
-     public Transition(state next,int delay){
+     public Transition(State next,int delay){
          this.next = next;
          this.input_name = NONE;
          this.input = -1;
@@ -36,7 +36,7 @@ public class Transition {
          return false;
      }
 
-     public state getNext(){
+     public State getNext(){
          return next;
      }
 }

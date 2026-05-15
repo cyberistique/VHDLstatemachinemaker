@@ -1,0 +1,16 @@
+hi moore 4
+inp1 inp2 inp3 inp4
+out1 out2 out3 out4
+IDLE out1 0
+START out2 0
+DATA out3 1
+STOP out4 0
+
+IDLE inp1 0 0 START
+IDLE inp1 1 0 IDLE
+START inp2 0 1 DATA
+START inp2 1 1 IDLE
+DATA inp3 0 2 DATA NA NA 0 STOP
+DATA inp3 1 2 STOP NA NA 0 IDLE
+STOP inp4 1 0 IDLE
+STOP inp4 0 0 START
