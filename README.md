@@ -87,6 +87,9 @@ Use the transition table:
 - `Value`: 0/1 (ignored when `Input=NA`)
 - `Delay(ns)`: integer delay used in `after <n> ns`
 
+
+![Description](images/your-image.png)
+
 Notes:
 
 - “No transition” is acceptable (the state’s case branch emits `null;`).
