@@ -10,6 +10,7 @@ public class MachineStruct {
     private final static String MEELY = "meely";
     private String[] inputs;
     private String[] outputs;
+    private int[] outputWidths;
     private String type;
     private int out_size;
     private State idle;
@@ -19,6 +20,7 @@ public class MachineStruct {
     public MachineStruct(String name,String type, int out_size,int inpSize, int outSize) {
         this.inputs = new String[inpSize];
         this.outputs = new String[outSize];
+        this.outputWidths = new int[outSize];
         this.type = type;
         this.name = name;
         this.out_size = out_size;
@@ -30,12 +32,43 @@ public class MachineStruct {
         this.idle = idle;
     }
 
+    public void addState(State state) {
+        this.State_Dict.put(state.getName(), state);
+    }
+
+    public State getState(String name) {
+        return this.State_Dict.get(name);
+    }
+
     public void setInputs(String[] inputs){
         this.inputs = inputs;
     }
 
     public void setOutputs(String[] outputs){
         this.outputs = outputs;
+        this.outputWidths = new int[outputs.length];
+        java.util.Arrays.fill(this.outputWidths, 1);
+    }
+
+    public void setOutputs(String[] outputs, int[] widths) {
+        if (outputs.length != widths.length) throw new IllegalArgumentException("outputs/widths length mismatch");
+        this.outputs = outputs;
+        this.outputWidths = widths.clone();
+    }
+
+    public int getOutputWidth(String outputName) {
+        for (int i = 0; i < outputs.length; i++) {
+            if (java.util.Objects.equals(outputs[i], outputName)) return outputWidths[i];
+        }
+        return 1;
+    }
+
+    public String formatOutputAssign(String outputName, int value) {
+        int width = getOutputWidth(outputName);
+        if (width <= 1) {
+            return outputName + " <= '" + (value == 0 ? "0" : "1") + "';";
+        }
+        return outputName + " <= std_logic_vector(to_unsigned(" + value + ", " + width + "));";
     }
 
     public String getCase(String option) {
@@ -44,17 +77,20 @@ public class MachineStruct {
             T_out = new StringBuilder("port(\n" +
                     "    clk         : in std_logic;\n"
                     );
+            T_out.append("    rst         : in std_logic;\n");
             for (String i: inputs){
                 T_out.append("   "+i+"   : in std_logic;\n");
             }
             for (int i = 0; i< outputs.length ; i++) {
+                int width = (outputWidths != null && outputWidths.length == outputs.length) ? outputWidths[i] : 1;
+                String type = (width <= 1) ? "std_logic" : ("std_logic_vector(" + (width - 1) + " downto 0)");
                 if (i == outputs.length - 1) {
-                    T_out.append("   " + outputs[i] + "   : out std_logic);\n");
+                    T_out.append("   " + outputs[i] + "   : out " + type + ");\n");
                 } else {
-                    T_out.append("   " + outputs[i] + "   : out std_logic;\n");
+                    T_out.append("   " + outputs[i] + "   : out " + type + ";\n");
                 }
             }
-            T_out.append("end entity;\n");
+            T_out.append("end entity ").append(name).append(";\n");
 
         } else if (option.equals("name")){
             T_out = new StringBuilder("architecture beh of "+name+" is\n"+"type t_State is (");
@@ -71,13 +107,21 @@ public class MachineStruct {
 
     public String iterate(String option, HashMap<String,State> states){
         StringBuilder T_out = new StringBuilder();
+        if (option.equals("name")) {
+            boolean first = true;
+            for (String key : states.keySet()) {
+                if (!first) T_out.append(",");
+                first = false;
+                T_out.append(states.get(key).getName());
+            }
+            return T_out.toString();
+        }
+
         for (String key : states.keySet()) {
-            if (option.equals("case")){
+            if (option.equals("case")) {
                 T_out.append(states.get(key).case_());
             } else if (option.equals("out")) {
-                T_out.append(states.get(key).getOut());
-            } else if (option.equals("name")) {
-                T_out.append(states.get(key).getName()+',');
+                T_out.append(states.get(key).getOut(this));
             } else {
                 T_out.append(states.get(key));
             }
@@ -89,6 +133,18 @@ public class MachineStruct {
         return name;
     }
 
+    public String[] getOutputs() {
+        return outputs;
+    }
+
+    public String[] getInputs() {
+        return inputs;
+    }
+
+    public int[] getOutputWidths() {
+        return outputWidths == null ? null : outputWidths.clone();
+    }
+
     public String clock_(){
         return "begin\n" +
                 "process(clk) is\n" +
@@ -97,6 +153,7 @@ public class MachineStruct {
                 "   if rst = '0' then\n" +
                 "       sstate <= "+idle.getName()+";\n"+
                 "   else\n"+getCase("case")+
+                "   end if;\n" +
                 "end if;\n" +
                 "end process;\n";
     }

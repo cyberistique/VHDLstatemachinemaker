@@ -23,6 +23,14 @@ public class Transition {
          return "if "+input_name+" = '"+input+"' then ";
      }
 
+     public String getInputName() {
+         return input_name;
+     }
+
+     public int getInput() {
+         return input;
+     }
+
      public String getDelay(){
          if (delay == 0){
              return "";
@@ -30,10 +38,7 @@ public class Transition {
          return " after "+delay+" ns";
      }
      public boolean isNone() {
-         if (input_name.equals(NONE) & (input == -1)) {
-             return true;
-         }
-         return false;
+         return input_name.equals(NONE) && (input == -1);
      }
 
      public State getNext(){
