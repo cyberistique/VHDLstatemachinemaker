@@ -3,7 +3,6 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Scanner;
-import java.util.TreeMap;
 
 public class MachineStruct {
     private final static String MOORE = "moore";
@@ -11,13 +10,13 @@ public class MachineStruct {
     private String[] inputs;
     private String[] outputs;
     private int[] outputWidths;
-    private String type;
-    private int out_size;
+    private final String type;
+    private final int out_size;
     private State idle;
-    private String name;
-    private HashMap<String,State> State_Dict;
+    private final String name;
+    private final HashMap<String, State> State_Dict;
 
-    public MachineStruct(String name,String type, int out_size,int inpSize, int outSize) {
+    public MachineStruct(String name, String type, int out_size, int inpSize, int outSize) {
         this.inputs = new String[inpSize];
         this.outputs = new String[outSize];
         this.outputWidths = new int[outSize];
@@ -28,7 +27,7 @@ public class MachineStruct {
     }
 
 
-    public void set_idle(State idle){
+    public void set_idle(State idle) {
         this.idle = idle;
     }
 
@@ -40,11 +39,11 @@ public class MachineStruct {
         return this.State_Dict.get(name);
     }
 
-    public void setInputs(String[] inputs){
+    public void setInputs(String[] inputs) {
         this.inputs = inputs;
     }
 
-    public void setOutputs(String[] outputs){
+    public void setOutputs(String[] outputs) {
         this.outputs = outputs;
         this.outputWidths = new int[outputs.length];
         java.util.Arrays.fill(this.outputWidths, 1);
@@ -76,12 +75,12 @@ public class MachineStruct {
         if (option.equals("IO")) {
             T_out = new StringBuilder("port(\n" +
                     "    clk         : in std_logic;\n"
-                    );
+            );
             T_out.append("    rst         : in std_logic;\n");
-            for (String i: inputs){
-                T_out.append("   "+i+"   : in std_logic;\n");
+            for (String i : inputs) {
+                T_out.append("   " + i + "   : in std_logic;\n");
             }
-            for (int i = 0; i< outputs.length ; i++) {
+            for (int i = 0; i < outputs.length; i++) {
                 int width = (outputWidths != null && outputWidths.length == outputs.length) ? outputWidths[i] : 1;
                 String type = (width <= 1) ? "std_logic" : ("std_logic_vector(" + (width - 1) + " downto 0)");
                 if (i == outputs.length - 1) {
@@ -92,11 +91,11 @@ public class MachineStruct {
             }
             T_out.append("end entity ").append(name).append(";\n");
 
-        } else if (option.equals("name")){
-            T_out = new StringBuilder("architecture beh of "+name+" is\n"+"type t_State is (");
+        } else if (option.equals("name")) {
+            T_out = new StringBuilder("architecture beh of " + name + " is\n" + "type t_State is (");
             T_out.append(iterate(option, State_Dict));
             T_out.append(");\nsignal sstate : t_State;\n");
-        } else{
+        } else {
             T_out = new StringBuilder("case sstate is\n");
             T_out.append(iterate(option, State_Dict));
             T_out.append("end case;\n");
@@ -105,7 +104,7 @@ public class MachineStruct {
         return T_out.toString();
     }
 
-    public String iterate(String option, HashMap<String,State> states){
+    public String iterate(String option, HashMap<String, State> states) {
         StringBuilder T_out = new StringBuilder();
         if (option.equals("name")) {
             boolean first = true;
@@ -129,7 +128,7 @@ public class MachineStruct {
         return T_out.toString();
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
@@ -145,22 +144,22 @@ public class MachineStruct {
         return outputWidths == null ? null : outputWidths.clone();
     }
 
-    public String clock_(){
+    public String clock_() {
         return "begin\n" +
                 "process(clk) is\n" +
                 "begin\n" +
                 "if rising_edge(clk) then\n" +
                 "   if rst = '0' then\n" +
-                "       sstate <= "+idle.getName()+";\n"+
-                "   else\n"+getCase("case")+
+                "       sstate <= " + idle.getName() + ";\n" +
+                "   else\n" + getCase("case") +
                 "   end if;\n" +
                 "end if;\n" +
                 "end process;\n";
     }
 
     @Override
-    public String toString(){
-        return iterate("case",State_Dict);
+    public String toString() {
+        return iterate("case", State_Dict);
     }
 
     public static void main(String[] args) throws FileNotFoundException {
@@ -169,36 +168,35 @@ public class MachineStruct {
         String[] header = in.nextLine().split("\\s+");
         String[] inputs = in.nextLine().split("\\s+");
         String[] outputs = in.nextLine().split("\\s+");
-        MachineStruct main = new MachineStruct(header[0],header[1],Integer.parseInt(header[2]), inputs.length, outputs.length);
+        MachineStruct main = new MachineStruct(header[0], header[1], Integer.parseInt(header[2]), inputs.length, outputs.length);
         main.setInputs(inputs);
         main.setOutputs(outputs);
 
         String[] next = in.nextLine().split("\\s+");
-        State newState_  = new State(next[0], Integer.parseInt(next[2]), next[1]);
+        State newState_ = new State(next[0], Integer.parseInt(next[2]), next[1]);
         main.State_Dict.put(next[0], newState_);
         main.idle = newState_;
 
         while (in.hasNext()) {
             String in_line = in.nextLine();
-            if (in_line.trim().isEmpty()){
+            if (in_line.trim().isEmpty()) {
                 stage = 1;
-            }
-            else {
+            } else {
                 if (stage == 0) {
                     next = in_line.split("\\s+");
                     State newState = new State(next[0], Integer.parseInt(next[2]), next[1]);
                     main.State_Dict.put(next[0], newState);
                     System.out.println("LINE: " + in_line);
-                } else if (stage == 1){
+                } else if (stage == 1) {
                     next = in_line.split("\\s+");
                     System.out.println("LINE: " + in_line);
                     if ((next.length - 1) % 4 == 0) {
-                        for (int i = 0; i< (next.length-1)/4;i++){
+                        for (int i = 0; i < (next.length - 1) / 4; i++) {
                             Transition next_transition;
-                            if (Objects.equals(next[4*i + 1], "NA")){
-                                next_transition = new Transition(main.State_Dict.get(next[4*i+4]),Integer.parseInt(next[4*i+3]));
+                            if (Objects.equals(next[4 * i + 1], "NA")) {
+                                next_transition = new Transition(main.State_Dict.get(next[4 * i + 4]), Integer.parseInt(next[4 * i + 3]));
                             } else {
-                                next_transition = new Transition(main.State_Dict.get(next[4*i+4]),next[4*i+1],Integer.parseInt(next[4*i+2]),Integer.parseInt(next[4*i+3]));
+                                next_transition = new Transition(main.State_Dict.get(next[4 * i + 4]), next[4 * i + 1], Integer.parseInt(next[4 * i + 2]), Integer.parseInt(next[4 * i + 3]));
                             }
                             main.State_Dict.get(next[0]).add_transition(next_transition);
                         }

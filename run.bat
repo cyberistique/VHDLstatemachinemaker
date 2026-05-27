@@ -13,3 +13,4 @@ if not "%FX%"=="" (
   java -cp src MachineViewer %OUT_NAME%
 )
 
+`

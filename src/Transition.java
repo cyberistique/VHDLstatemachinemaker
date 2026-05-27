@@ -1,47 +1,49 @@
 public class Transition {
     private final static String NONE = "NA";
-    private State next;
-    private String input_name;
-    private int input;
-    private int delay;
+    private final State next;
+    private final String input_name;
+    private final int input;
+    private final int delay;
 
-     public Transition(State next,String input_name, int input,int delay){
-         this.next = next;
-         this.input_name = input_name;
-         this.input = input;
-         this.delay = delay;
-     }
-     public Transition(State next,int delay){
-         this.next = next;
-         this.input_name = NONE;
-         this.input = -1;
-         this.delay = delay;
-     }
+    public Transition(State next, String input_name, int input, int delay) {
+        this.next = next;
+        this.input_name = input_name;
+        this.input = input;
+        this.delay = delay;
+    }
+
+    public Transition(State next, int delay) {
+        this.next = next;
+        this.input_name = NONE;
+        this.input = -1;
+        this.delay = delay;
+    }
 
 
-     public String condition(){
-         return "if "+input_name+" = '"+input+"' then ";
-     }
+    public String condition() {
+        return "if " + input_name + " = '" + input + "' then ";
+    }
 
-     public String getInputName() {
-         return input_name;
-     }
+    public String getInputName() {
+        return input_name;
+    }
 
-     public int getInput() {
-         return input;
-     }
+    public int getInput() {
+        return input;
+    }
 
-     public String getDelay(){
-         if (delay == 0){
-             return "";
-         }
-         return " after "+delay+" ns";
-     }
-     public boolean isNone() {
-         return input_name.equals(NONE) && (input == -1);
-     }
+    public String getDelay() {
+        if (delay == 0) {
+            return "";
+        }
+        return " after " + delay + " ns";
+    }
 
-     public State getNext(){
-         return next;
-     }
+    public boolean isNone() {
+        return input_name.equals(NONE) && (input == -1);
+    }
+
+    public State getNext() {
+        return next;
+    }
 }

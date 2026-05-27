@@ -7,7 +7,7 @@ import java.util.List;
 public class MachineModel {
     private MachineStruct machine;
     private PrintWriter writer;
-    private List<Observer<MachineModel, String>> observers = new LinkedList<>();
+    private final List<Observer<MachineModel, String>> observers = new LinkedList<>();
     private String status;
     private final String fileBaseName;
 
@@ -26,16 +26,14 @@ public class MachineModel {
         // rest of needed syntax can be added by you, we will use String builders
         if (machine == null) throw new IllegalStateException("Machine not configured");
 
-        StringBuilder out = new StringBuilder();
-        out.append("library ieee;\n");
-        out.append("use ieee.std_logic_1164.all;\n");
-        out.append("use ieee.numeric_std.all;\n\n");
-
-        out.append("entity ").append(machine.getName()).append(" is\n");
-        out.append(machine.getCase("IO"));
-        out.append("\n");
-        out.append(machine.getCase("name"));
-        return out.toString();
+        String out = "library ieee;\n" +
+                "use ieee.std_logic_1164.all;\n" +
+                "use ieee.numeric_std.all;\n\n" +
+                "entity " + machine.getName() + " is\n" +
+                machine.getCase("IO") +
+                "\n" +
+                machine.getCase("name");
+        return out;
 
     }
 
@@ -50,14 +48,13 @@ public class MachineModel {
         //uses machine.getCase("out")
         // rest of needed syntax can be added by you, we will use String builders
         if (machine == null) throw new IllegalStateException("Machine not configured");
-        StringBuilder out = new StringBuilder();
-        out.append("\n-- output decode\n");
-        out.append("process(sstate) is\n");
-        out.append("begin\n");
-        out.append(machine.getCase("out"));
-        out.append("end process;\n");
-        out.append("end architecture;\n");
-        return out.toString();
+        String out = "\n-- output decode\n" +
+                "process(sstate) is\n" +
+                "begin\n" +
+                machine.getCase("out") +
+                "end process;\n" +
+                "end architecture;\n";
+        return out;
     }
 
     public void FSMmake() {
@@ -166,7 +163,7 @@ public class MachineModel {
         return out.toString();
     }
 
-    public String getStatus(){
+    public String getStatus() {
         return this.status;
     }
 
@@ -192,7 +189,7 @@ public class MachineModel {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return status + "\n";
     }
 }

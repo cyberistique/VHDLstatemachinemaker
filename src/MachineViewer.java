@@ -3,21 +3,14 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
 
 import java.util.Objects;
@@ -256,7 +249,8 @@ public class MachineViewer extends Application implements Observer<MachineModel,
                 .toArray(String[]::new);
     }
 
-    private record ParsedOutputs(String[] names, int[] widths) {}
+    private record ParsedOutputs(String[] names, int[] widths) {
+    }
 
     private static ParsedOutputs parseOutputs(String outputsText, int defaultWidth) {
         java.util.List<String> names = new java.util.ArrayList<>();

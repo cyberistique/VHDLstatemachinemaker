@@ -1,11 +1,14 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class State {
-    private int out;
-    private String name;
-    private String out_name;
+    private final int out;
+    private final String name;
+    private final String out_name;
     private Map<String, Integer> outputs;
-    private List<Transition> transitions;
+    private final List<Transition> transitions;
 
     public State(String name, int out, String out_name) {
         this.name = name;
@@ -105,8 +108,8 @@ public class State {
         return out.toString();
     }
 
-        @Override
-        public String toString () {
-            return this.name + " | " + this.out_name + " | " + this.out + " |\n";
-        }
+    @Override
+    public String toString() {
+        return this.name + " | " + this.out_name + " | " + this.out + " |\n";
     }
+}
