@@ -88,7 +88,10 @@ Use the transition table:
 - `Delay(ns)`: integer delay used in `after <n> ns`
 
 
-![Description](images/your-image.png)
+
+![Description](images/image1.png)
+
+
 
 Notes:
 
